@@ -22,9 +22,9 @@ export default{
     methods:{
         createTodo(){
             //생성
-            console.log(this.title);
-            this.$emit('create-todo')
+            this.$emit('create-todo',this.title)
 
+            console.log(this.title)
         }
     }
 }

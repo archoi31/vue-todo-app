@@ -19,7 +19,9 @@ module.exports = (env, opts) => {
         crypto: require.resolve('crypto-browserify'),
         path: require.resolve('path-browserify'),
         stream: require.resolve('stream-browserify'),
-        util: require.resolve('util')
+        util: require.resolve('util'),
+        url: require.resolve('url'),
+
         
       }
     },

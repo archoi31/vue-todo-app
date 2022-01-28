@@ -1,12 +1,14 @@
 <template>
     <div>    
         <todo-item />
-        <todo-creator/>
+        <todo-creator @create-todo="createTodo" />
     </div>
 </template>
 
 <script>
-import { Low, JSONFile } from 'lowdb'
+import { join, dirname } from 'path'
+import { LowSync, JSONFile } from 'lowdb'
+import { Url } from 'url'
 import lodash from 'lodash'
 import cryptoRandomString from 'crypto-random-string'
 import TodoCreator from './TodoCreator'
@@ -18,35 +20,27 @@ export default{
         TodoItem
     },
     data(){
-            const adapter = new JSONFile('./db.json')//DB
-            const db = new Low(adapter)
         return{
-            
-            db: db
+            db: null
         }
     },
-    created(){
+    created(){ //TodoApp 생성 직 후 실행
         this.initDB()
     },
     methods : {
         initDB(){
-                
-            console.log(this.db)
-                    
-          
-            // If file.json doesn't exist, db.data will be null
-            // Set default data
-            // db.data = db.data || { posts: [] } // Node < v15.x
-            this.db.data ||= { todos: [] }             // Node >= 15.x
-
-            // Create and query items using plain JS
-            this.db.data.todos.push('hello world')
-            this.db.data.todos[0]
-
+            
+            const adapter = new LowSync(new LocalStorage('todo-app'))
+            this.db = new Low(adapter)
+            console.log("adapter")
+            this.db.data ||= { 
+                todos: [] //Collection
+            }      
+            this.db.write()
 
         },
         createTodo(title){
-           
+          
             const newTodo = {
                 id : cryptoRandomString({length:10}),
                 title,
@@ -54,12 +48,17 @@ export default{
                 updateAt : new Date(),
                 done:false
             }
-            this.db.chain = lodash.chain(this.db.data)
+           this.db.data.push(newTodo)
             
-            this.db.chain
-            .get('todos') //lodash
-            .find(newTodo) //lodash
-            .value()//lowdb
+            
+            this.db.write()
+            // this.db.chain = lodash.chain(this.db.data)
+            
+            // this.db.chain
+            // .get('todos') //lodash
+            // .find(newTodo) //lodash
+            // .value()//lowdb
+
         }
     }
 }
