@@ -1,11 +1,12 @@
 <template>
     <div>
-        <button>추가</button>
+        <button @click="createTodo">추가</button>
         <input 
         v-model="title"
         placeholder="할 일을 추가하세요!"
         type="text" 
         @input="title = $event.target.value"
+        @keypress.enter="createTodo"
         />
     </div>
 </template>
@@ -14,7 +15,16 @@
 export default{
     data(){
         return{
-            title : ''
+            title : '',
+            placeholder : '할 일을 추가하세요!'
+        }
+    },
+    methods:{
+        createTodo(){
+            //생성
+            console.log(this.title);
+            this.$emit('create-todo')
+
         }
     }
 }

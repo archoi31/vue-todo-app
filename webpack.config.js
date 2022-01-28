@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const { merge } = require('webpack-merge')
+const webpack = require('webpack')
 require('@babel/polyfill')
 
 module.exports = (env, opts) => {
@@ -13,9 +14,13 @@ module.exports = (env, opts) => {
       extensions: ['.vue', '.js'],
       fallback:{
         fs:false,
+        assert: require.resolve('assert'),
+        buffer: require.resolve('buffer'),
+        crypto: require.resolve('crypto-browserify'),
         path: require.resolve('path-browserify'),
-        util :false,
-        crypto : false
+        stream: require.resolve('stream-browserify'),
+        util: require.resolve('util')
+        
       }
     },
     // 진입점, 경로설정
@@ -69,7 +74,10 @@ module.exports = (env, opts) => {
         patterns: [
           { from: 'assets', to: '' }
         ]
-      })
+      }),
+      new webpack.DefinePlugin({
+        'process.env': JSON.stringify(process.env)
+     })
     ]
 
   }
